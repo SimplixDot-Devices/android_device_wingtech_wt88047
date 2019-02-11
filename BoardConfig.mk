@@ -52,8 +52,9 @@ USE_DEVICE_SPECIFIC_CAMERA := true
 TARGET_NEEDS_PLATFORM_TEXT_RELOCATIONS := true
 TARGET_NEEDS_LEGACY_CAMERA_HAL1_DYN_NATIVE_HANDLE := true
 TARGET_DESTROYED_MUTEX_USAGE_WHITELIST := system/vendor/bin/mm-qcamera-daemon
-TARGET_PROCESS_SDK_VERSION_OVERRIDE += \
-	/system/vendor/bin/mm-qcamera-daemon=23
+TARGET_PROCESS_SDK_VERSION_OVERRIDE := \
+    /system/bin/mediaserver=22 \
+    /system/vendor/bin/mm-qcamera-daemon=22
 
 # Crypto
 TARGET_HW_DISK_ENCRYPTION := true
@@ -116,6 +117,10 @@ BOARD_KERNEL_PAGESIZE := 2048
 BOARD_KERNEL_TAGS_OFFSET := 0x01E00000
 BOARD_RAMDISK_OFFSET     := 0x02000000
 
+# Kernel Toolchains
+#KERNEL_TOOLCHAIN := $(HOME)/tool/gcc-7/bin
+#KERNEL_TOOLCHAIN_PREFIX= arm-none-eabi-
+
 # HIDL
 DEVICE_MANIFEST_FILE := $(DEVICE_PATH)/manifest.xml
 DEVICE_MATRIX_FILE := $(DEVICE_PATH)/compatibility_matrix.xml
@@ -138,6 +143,9 @@ TARGET_USES_INTERACTION_BOOST := true
 # Properties
 TARGET_SYSTEM_PROP := $(DEVICE_PATH)/system.prop
 
+# Radio
+TARGET_PROVIDES_QTI_TELEPHONY_JAR := true
+
 # Recovery
 TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/rootdir/etc/fstab.qcom
 BOARD_NO_SECURE_DISCARD := true
@@ -152,17 +160,17 @@ USE_OPENGL_RENDERER := true
 
 # SELinux
 #include device/qcom/sepolicy/sepolicy.mk
-#include device/qcom/sepolicy/legacy-sepolicy.mk
+include device/qcom/sepolicy-legacy/sepolicy.mk
 
 #BOARD_SEPOLICY_DIRS += \
-#    $(DEVICE_PATH)/sepolicy
+    #$(DEVICE_PATH)/sepolicy
 
 # Shims
 TARGET_LD_SHIM_LIBS := \
-    /system/lib/libc.so|libshims_bionic.so \
+    /system/vendor/bin/mm-qcamera-daemon|libshim_camera.so \
     /system/vendor/lib/libflp.so|libshims_flp.so \
     /system/vendor/lib/libizat_core.so|libshims_get_process_name.so \
-    /system/vendor/lib/libmmcamera2_imglib_modules.so|libshim_camera.so 
+    /system/vendor/lib/libmmcamera2_imglib_modules.so|libshim_camera.so \
 
 # Wlan
 BOARD_HAS_QCOM_WLAN := true
@@ -176,9 +184,6 @@ TARGET_USES_QCOM_WCNSS_QMI := true
 WIFI_DRIVER_FW_PATH_AP := "ap"
 WIFI_DRIVER_FW_PATH_STA := "sta"
 WPA_SUPPLICANT_VERSION := VER_0_8_X
-
-#enabling IMS for this target
-TARGET_USES_IMS := true
 
 # odex system for a faster boot
 WITH_DEXPREOPT := true
